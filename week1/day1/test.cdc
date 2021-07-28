@@ -53,11 +53,37 @@ pub resource Picture {
   }
 }
 
-pub fun display(canvas: Canvas) {
+pub fun display(canvas: Canvas): [String] {
 
   // *   * * *   *   * * *   *
   // +-----+
+  let pixelLines = deserializeCanvas(canvas)
+  let width = Int(canvas.width)
+  let height = Int(canvas.height)
 
+  var top = "+"
+  var bottom = "+"
+  var t = 0
+  while t < width {
+    top = top.concat("-")
+    bottom = bottom.concat("-")
+    t = t + 1
+  }
+  top = top.concat("+") 
+  bottom = bottom.concat("+")
+
+  var output: [String] = [top]
+  var last: [String] = [bottom]
+  for line in pixelLines {
+    var newline = "|".concat(line).concat("|")
+    var lineArr: [String] = [newline]
+    output = output.concat(lineArr)
+  }
+  output = output.concat(last)
+  for line in output {
+    log(line)
+  }
+  return output
 }
 
 pub fun main() {
@@ -79,5 +105,8 @@ pub fun main() {
     let pictureX <- create Picture(canvas: canvasX)
     log(pictureX.canvas)
     log(deserializeCanvas(canvasX))
+
+    log("=== W1Q1 ===")
+    display(canvas: canvasX)
     destroy pictureX
 }
