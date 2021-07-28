@@ -83,16 +83,6 @@ pub fun display(canvas: Canvas): [String] {
   return output
 }
 
-pub fun createPicture(pixels: [String]): @Picture {
-  let canvas = Canvas(
-    width: UInt8(pixels[0].length),
-    height: UInt8(pixels.length),
-    pixels: serializePixels(pixels)
-  )
-  let picture <- create Picture(canvas: canvas)
-  return <- picture
-}
-
 // W1Q2 challenge: Create a resource that prints `Picture`'s but only once for each unique 5x5 `Canvas`.
 pub resource Printer {
   // Map to remember which Canvases have been printed.
@@ -117,50 +107,6 @@ pub resource Printer {
 }
 
 pub fun main() {
-  // Create a Picture for each letter in: "FLOWX"
-  
-  // "F"
-  let pixelsF = [
-    "*****",
-    "*    ",
-    "*****",
-    "*    ",
-    "*    "
-  ]
-  let pictureF <- createPicture(pixels: pixelsF)
-  
-  // "L"
-  let pixelsL = [
-    "*    ",
-    "*    ",
-    "*    ",
-    "*    ",
-    "*****"
-  ]
-  let pictureL <- createPicture(pixels: pixelsL)
-
-  
-  // "O"
-  let pixelsO = [
-    "*****",
-    "*   *",
-    "*   *",
-    "*   *",
-    "*****"
-  ]
-  let pictureO <- createPicture(pixels: pixelsO)
-
-  
-  // "W"
-  let pixelsW = [
-    "*   *",
-    "*   *",
-    "* * *",
-    " * * ",
-    "     "
-  ]
-  let pictureW <- createPicture(pixels: pixelsW)
-
 
   // "X"
   let pixelsX = [
@@ -170,24 +116,58 @@ pub fun main() {
     " * * ",
     "*   *"
   ]
-  let pictureX <- createPicture(pixels: pixelsX)
-
-  log("=== W1Q2 ===")
   let canvasX = Canvas(
     width: 5,
     height: 5, 
     pixels: serializePixels(pixelsX),
   ) 
 
+  // "F"
+  let pixelsF = [
+    "*****",
+    "*    ",
+    "*****",
+    "*    ",
+    "*    "
+  ]
+  let canvasF = Canvas(
+    width: 5,
+    height: 5, 
+    pixels: serializePixels(pixelsF),
+  ) 
+
+  // "X"
+  let pixelsXDup = [
+    "*   *",
+    " * * ",
+    "  *  ",
+    " * * ",
+    "*   *"
+  ]
+  let canvasXDuplicate = Canvas(
+    width: 5,
+    height: 5, 
+    pixels: serializePixels(pixelsXDup),
+  ) 
+
+  log("=== W1Q2 ===")
+  log("1. Print a Picture using Canvas X for the first time -- should succeed.")
   let printer <- create Printer()
   let printX <- printer.print(canvas: canvasX)
 
+  log("2. Try again with the same Canvas X -- should fail.")
+  let secondPrintX <- printer.print(canvas: canvasX)
+
+  log("3. Try with a new Canvas F -- should succeed.")
+  let printF <- printer.print(canvas: canvasF)
+
+  log("4. Try with a duplicate Canvas X -- should fail.")
+  let printXDuplicate <- printer.print(canvas: canvasXDuplicate)
   log("=== W1Q2 ===")
+
   destroy printer
   destroy printX
-  destroy pictureF
-  destroy pictureL
-  destroy pictureO
-  destroy pictureW
-  destroy pictureX
+  destroy secondPrintX
+  destroy printF
+  destroy printXDuplicate
 }
